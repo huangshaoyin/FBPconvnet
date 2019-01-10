@@ -1,0 +1,113 @@
+% I=imread('4.tif');
+% I2=imread('5.tif');
+% 
+% 
+% xmin=-3;                %成像区域划分
+% xmax=3;
+% ymin=7;           
+% ymax=13;
+% xdpi = 2*3/235;           %以理论分辨率的十分之一划分单位像素点
+% ydpi = 2*3/235;
+% xpart = xmin:xdpi:xmax;
+% ypart = ymin:ydpi:ymax;
+% 
+% I5=double(I);
+% I5=I5/max(max(I5));
+% I6=double(I2);
+% I6=I6/max(max(I6));
+% %I6=double(I2);
+% I3=20*log10(I5);
+% I4=20*log10(I6);
+% 
+
+xmin=-3;                %成像区域划分
+xmax=3;
+ymin=7;           
+ymax=13;
+xdpi = 2*3/235;           %以理论分辨率的十分之一划分单位像素点
+ydpi = 2*3/235;
+xpart = xmin:xdpi:xmax;
+ypart = ymin:ydpi:ymax;
+
+
+a_rcnn_test_train_data=load('test_elips.mat');
+test_label=double(a_rcnn_test_train_data.label);
+test_sparse=double(a_rcnn_test_train_data.sparse);
+
+%size(test_label)
+
+% ctscene1=zeros(row,col);
+c_rcnn_test_train_data_predict=load('unet3.mat');
+c_rcnn_test_train_data_predict=double(c_rcnn_test_train_data_predict.unet3);
+% 
+% [L,row,col]=size(c_rcnn_test_train_data_predict);
+% c_rcnn=c_rcnn_test_train_data_predict;
+% for k=1:L
+%     for i=1:row
+%         for j=1:col
+%             c_rcnn_test_train_data_predict(k,i,j)=c_rcnn(k,j,i);
+%         end
+%     end
+% end
+% c_my_msers=zeros(1,L);
+% for i=1:L
+% 
+%     temp=c_rcnn_test_train_data_predict(i,:,:)-c_rcnn_test_mask_data(i,:,:);
+%     temp=temp.^2;
+%     my_sum=sum(sum(temp))/(row*col);
+%         c_my_msers(1,i)=sqrt(my_sum);
+% end
+% 
+% c_rmse=sum(c_my_msers)/L;
+  num_picture=512;
+  
+ num=1;
+ test=zeros(num_picture,num_picture);
+ test(:,:)=c_rcnn_test_train_data_predict(num,:,:);
+% %test_mask_data(1,:,:)=test_mask_data(1,:,:)/max(max(test_mask_data(1,:,:)));
+% for i=1:236
+%     for j=1:236
+%         test(i,j)=test_mask_data(1,j,i);
+%     end
+% end
+
+mask=zeros(num_picture,num_picture);
+%test_mask_data(1,:,:)=test_mask_data(1,:,:)/max(max(test_mask_data(1,:,:)));
+mask(:,:)=test_label(:,:,1,num);
+
+test_input=zeros(num_picture,num_picture);
+%test_mask_data(1,:,:)=test_mask_data(1,:,:)/max(max(test_mask_data(1,:,:)));
+test_input(:,:)=test_sparse(:,:,1,num);
+
+
+rmse=sum(sum(mask.^2))/sum(sum((mask-test).^2));
+
+figure,
+imagesc(xpart,ypart,test);title('预测图片');
+figure,
+imagesc(xpart,ypart,mask);title('参考图片');
+figure,
+imagesc(xpart,ypart,test_input),title('输入图片');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

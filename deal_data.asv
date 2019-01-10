@@ -1,0 +1,17 @@
+load 'test_elips.mat';
+
+load 'train_elips.mat';
+
+size(sparse)
+test=zeros(512,512);
+test_label=zeros(512,512);
+
+num_show=450;
+test(:,:)=sparse(:,:,1,num_show);
+
+
+test_label(:,:)=label(:,:,1,num_show);
+figure,
+imshow(test,[]);
+figure,
+imshow(test_label,[]);
