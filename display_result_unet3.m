@@ -28,11 +28,11 @@ test_input(:,:)=test_sparse(:,:,1,num);
 rmse=sum(sum(mask.^2))/sum(sum((mask-test).^2));
 
 figure,
-imagesc(xpart,ypart,test);title('Ԥ��ͼƬ');
+imagesc(test);title('Ô¤²âÍ¼Æ¬');
 figure,
-imagesc(xpart,ypart,mask);title('�ο�ͼƬ');
+imagesc(mask);title('²Î¿¼Í¼Æ¬');
 figure,
-imagesc(xpart,ypart,test_input),title('����ͼƬ');
+imagesc(test_input),title('ÊäÈëÍ¼Æ¬');
 
 
 
