@@ -28,68 +28,6 @@ class myUnet(object):
 	def get_unet(self):
 
 		inputs = Input((self.img_rows, self.img_cols,1))
-		
-		'''
-		unet with crop(because padding = valid) 
-
-		conv1 = Conv2D(64, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(inputs)
-		print "conv1 shape:",conv1.shape
-		conv1 = Conv2D(64, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv1)
-		print "conv1 shape:",conv1.shape
-		crop1 = Cropping2D(cropping=((90,90),(90,90)))(conv1)
-		print "crop1 shape:",crop1.shape
-		pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
-		print "pool1 shape:",pool1.shape
-
-		conv2 = Conv2D(128, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(pool1)
-		print "conv2 shape:",conv2.shape
-		conv2 = Conv2D(128, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv2)
-		print "conv2 shape:",conv2.shape
-		crop2 = Cropping2D(cropping=((41,41),(41,41)))(conv2)
-		print "crop2 shape:",crop2.shape
-		pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
-		print "pool2 shape:",pool2.shape
-
-		conv3 = Conv2D(256, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(pool2)
-		print "conv3 shape:",conv3.shape
-		conv3 = Conv2D(256, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv3)
-		print "conv3 shape:",conv3.shape
-		crop3 = Cropping2D(cropping=((16,17),(16,17)))(conv3)
-		print "crop3 shape:",crop3.shape
-		pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
-		print "pool3 shape:",pool3.shape
-
-		conv4 = Conv2D(512, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(pool3)
-		conv4 = Conv2D(512, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv4)
-		drop4 = Dropout(0.5)(conv4)
-		crop4 = Cropping2D(cropping=((4,4),(4,4)))(drop4)
-		pool4 = MaxPooling2D(pool_size=(2, 2))(drop4)
-
-		conv5 = Conv2D(1024, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(pool4)
-		conv5 = Conv2D(1024, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv5)
-		drop5 = Dropout(0.5)(conv5)
-
-		up6 = Conv2D(512, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(drop5))
-		merge6 = merge([crop4,up6], mode = 'concat', concat_axis = 3)
-		conv6 = Conv2D(512, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(merge6)
-		conv6 = Conv2D(512, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv6)
-
-		up7 = Conv2D(256, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(conv6))
-		merge7 = merge([crop3,up7], mode = 'concat', concat_axis = 3)
-		conv7 = Conv2D(256, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(merge7)
-		conv7 = Conv2D(256, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv7)
-
-		up8 = Conv2D(128, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(conv7))
-		merge8 = merge([crop2,up8], mode = 'concat', concat_axis = 3)
-		conv8 = Conv2D(128, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(merge8)
-		conv8 = Conv2D(128, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv8)
-
-		up9 = Conv2D(64, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(conv8))
-		merge9 = merge([crop1,up9], mode = 'concat', concat_axis = 3)
-		conv9 = Conv2D(64, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(merge9)
-		conv9 = Conv2D(64, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv9)
-		conv9 = Conv2D(2, 3, activation = 'relu', padding = 'valid', kernel_initializer = 'he_normal')(conv9)
-		'''
 
 		conv1 = Conv2D(64, 3, activation =None, padding = 'same', kernel_initializer = 'he_normal')(inputs)
 		BN1=kl.BatchNormalization(axis=-1, momentum=0.99, epsilon=0.001, center=True, scale=True, beta_initializer='zeros', gamma_initializer='ones', moving_mean_initializer='zeros',
@@ -269,9 +207,7 @@ class myUnet(object):
 		print('Fitting model...')
 		model.fit(imgs_train, imgs_mask_train, batch_size=25, nb_epoch=5, verbose=1,validation_split=0.00, shuffle=True, callbacks=[model_checkpoint])
 		model.save('unet.h5')
-		#print('predict test data')
-		#imgs_mask_test = model.predict(imgs_test, batch_size=1, verbose=1)
-		#np.save('D:\\hsyin\\u-net\\unet-master\\npydata\\imgs_mask_test.npy', imgs_mask_test)
+	
 
 	def save_img(self):
 
@@ -280,15 +216,7 @@ class myUnet(object):
 		imgs_test = mydata.load_test_data_ct()
 		imgs = model.predict(imgs_test, batch_size=1, verbose=1)
 		sio.savemat('unet.mat',{'unet':imgs})
-		'''
-		print("array to image")
-		imgs = np.load('D:\\hsyin\\u-net\\unet-master\\npydata\\imgs_mask_test.npy')
-		print("array to image")
-		for i in range(imgs.shape[0]):
-			img = imgs[i]
-			img = array_to_img(img)
-			img.save("D:\\hsyin\\u-net\\unet-master\\result\\%d.tif"%(i))
-		'''
+	
 
 
 
